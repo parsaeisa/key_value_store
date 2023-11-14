@@ -11,8 +11,6 @@ import (
 type Record struct {
 	Key   string
 	Value string
-
-	Mu sync.Mutex
 }
 
 type KVStore interface {
@@ -21,8 +19,8 @@ type KVStore interface {
 }
 
 type kvStore struct {
-	Storage  []*Record
 	Capacity int
+	Storage  []*Record
 	Locks    []sync.Mutex
 }
 
@@ -41,7 +39,6 @@ func (k *kvStore) Set(r Record) error {
 		// Hash collision
 		return fmt.Errorf("hash collisioned")
 	}
-
 	// Update or Insert
 	k.Locks[hash].Lock()
 	k.Storage[hash] = &r
